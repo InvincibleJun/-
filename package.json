@@ -1,0 +1,20 @@
+{
+  "name": "react-draft",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "draft-js": "^0.10.4",
+    "draftjs-to-html": "^0.8.2",
+    "html-to-draftjs": "^1.1.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-draft-wysiwyg": "^1.12.4",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
