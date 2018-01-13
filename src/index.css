@@ -3,3 +3,13 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.draft-wysiwyg-image-modal .rdw-image-modal-upload-option-label {
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+  align-items: left;
+  display: block;
+}

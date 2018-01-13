@@ -4,8 +4,9 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+// import config from './config'
 
-class App extends Component {
+class Ed extends Component {
   state = {
     editorState: EditorState.createEmpty()
   };
@@ -16,30 +17,40 @@ class App extends Component {
     });
   };
 
+  push = () => {
+    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+    console.log(html)
+  }
+
+  onEditorStateChange = (editorState) => {
+    this.setState({
+      editorState,
+    });
+  };
+
+
   render() {
     const { editorState } = this.state;
     return (
       <div>
-        <form
-          type="multipart/form-data"
-          action="http://localhost:3000/upload"
-          method="POST"
-        >
-          <input type="file" name="f" />
-          <input type="submit" />
-        </form>
+        <button onClick={this.push}>提交</button>
         <Editor
           wrapperClassName="demo-wrapper"
           editorClassName="demo-editor"
+          onEditorStateChange={this.onEditorStateChange}
           toolbar={{
             inline: { inDropdown: true },
             list: { inDropdown: true },
             textAlign: { inDropdown: true },
             link: { inDropdown: true },
             history: { inDropdown: true },
+            alignmentEnabled: false,
+            urlEnabled: false,
             image: {
+              popupClassName: 'draft-wysiwyg-image-modal',
               uploadCallback: uploadImageCallBack,
-              alt: { present: true, mandatory: true }
+              urlEnabled: false,
+              alt: { present: false, mandatory: false }
             }
           }}
         />
@@ -52,9 +63,8 @@ function uploadImageCallBack(file) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/upload");
-    xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=ABCD");
     const data = new FormData();
-    data.append("image", file);
+    data.append("file", file);
     xhr.send(data);
     xhr.addEventListener("load", () => {
       const response = JSON.parse(xhr.responseText);
@@ -67,4 +77,5 @@ function uploadImageCallBack(file) {
   });
 }
 
-export default App;
+export default Ed;
+
