@@ -2,39 +2,79 @@ import React, { Component } from "react";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
+import { stateFromHTML } from 'draft-js-import-html';
+import htmlToDraft from 'html-to-draftjs';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-// import config from './config'
+
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
 class Ed extends Component {
-  state = {
-    editorState: EditorState.createEmpty()
-  };
 
-  onEditorStateChange = editorState => {
-    this.setState({
-      editorState
-    });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      title: ''
+    }
+  }
 
-  push = () => {
-    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
-    console.log(html)
+  componentDidMount() {
+    fetch('http://localhost:3000/api/article/get').then(res => res.json()).then(data => {
+      const editorState = this.toDraft(data[2].body)
+      this.setState({ editorState })
+    })
+  }
+
+  getHTML = () => {
+    return draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+  }
+
+  toDraft = html => {
+    const contentBlock = htmlToDraft(html);
+    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+    return EditorState.createWithContent(contentState);
   }
 
   onEditorStateChange = (editorState) => {
+    debugger
     this.setState({
       editorState,
     });
   };
 
+  add = () => {
+    const { title } = this.state
+    fetch('http://localhost:3000/api/article/add', {
+      method: 'POST',
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        body: this.getHTML(),
+        title
+      })
+    })
+  }
+
+  changTitle = event => {
+    this.setState({ title: event.target.value })
+  }
 
   render() {
     const { editorState } = this.state;
     return (
       <div>
-        <button onClick={this.push}>提交</button>
+        <TextField
+          hintText="Full width"
+          value={this.state.title}
+          onChange={this.changTitle}
+          fullWidth={true}
+        />
+        <RaisedButton label="提交" onClick={this.add} />
         <Editor
+          editorState={editorState}
           wrapperClassName="demo-wrapper"
           editorClassName="demo-editor"
           onEditorStateChange={this.onEditorStateChange}
