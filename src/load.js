@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Card, CardHeader } from "material-ui/Card";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
+import config from "./assets/config/particles";
 
 class Load extends Component {
   constructor(props) {
@@ -12,9 +13,19 @@ class Load extends Component {
     };
   }
 
+  componentDidMount() {
+    window.particlesJS("bg", config);
+  }
+
   render() {
     return (
-      <Card style={{ width: 350, margin: 100, padding: "0 50px 50px" }}>
+      <Card
+        style={{
+          width: 350,
+          margin: "200px 0 0 1000px ",
+          padding: "0 50px 50px"
+        }}
+      >
         <TextField
           hintText="请输入用户名"
           floatingLabelText="用户名"

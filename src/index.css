@@ -2,6 +2,22 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#bg {
+  height: 100vh;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#root {
+  overflow: hidden;
 }
 
 .draft-wysiwyg-image-modal .rdw-image-modal-upload-option-label {
