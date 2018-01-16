@@ -4,7 +4,7 @@ import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import FontIcon from "material-ui/RaisedButton";
 import config from "./assets/config/particles";
-import './assets/iconfont/iconfont.css'
+import "./assets/iconfont/iconfont.css";
 
 class Load extends Component {
   constructor(props) {
@@ -18,6 +18,12 @@ class Load extends Component {
   componentDidMount() {
     window.particlesJS("bg", config);
   }
+
+  githubLogin = event => {
+    event.preventDefault();
+    window.location.href =
+      "https://github.com/login/oauth/authorize?client_id=79c7c7124c99c2c89d7c";
+  };
 
   render() {
     return (
@@ -47,7 +53,9 @@ class Load extends Component {
         <br />
         <br />
 
-        <p><i className="iconfont icon-github" style={{ fontSize: 22 }} />github登陆</p>
+        <p onClick={this.githubLogin}>
+          <i className="iconfont icon-github" style={{ fontSize: 22 }} />github登陆
+        </p>
       </Card>
     );
   }
