@@ -1,151 +1,102 @@
 import React, { Component } from "react";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import draftToHtml from "draftjs-to-html";
-import draftToMarkdown from "draftjs-to-markdown";
-import htmlToDraft from "html-to-draftjs";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Layout, Menu, Icon } from "antd";
 import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText
-} from "material-ui/Card";
-import styled from "styled-components";
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom'
+import Index from './views'
+import Edit from './views/article'
+import Draft from './views/article/draft'
+import Manage from './views/article/manage'
 
-import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
+const { Header, Sider, Content } = Layout;
+const SubMenu = Menu.SubMenu;
 
-// var converter = require("html-to-markdown");
-
-class Ed extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editorState: EditorState.createEmpty(),
-      title: ""
-    };
-  }
-
+class SiderDemo extends Component {
+  state = {
+    collapsed: false,
+    timer: null
+  };
   componentDidMount() {
-    // fetch("http://localhost:3000/api/article/get")
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     const editorState = this.toDraft(data[2].body);
-    //     this.setState({ editorState });
-    //   });
+    this.hideLeft();
   }
-
-  getHTML = () => {
-    return draftToHtml(
-      convertToRaw(this.state.editorState.getCurrentContent())
-    );
+  componentDidCatch() {
+    clearTimeout(this.state.timer);
+  }
+  hideLeft = () => {
+    clearTimeout(this.state.timer);
+    const timer = setTimeout(() => {
+      this.setState({ collapsed: true });
+    }, 2000);
+    this.setState({ timer });
   };
-
-  getMarkDown = () => {
-    const rawContentState = convertToRaw(
-      this.state.editorState.getCurrentContent()
-    );
-    return draftToMarkdown(rawContentState);
-  };
-
-  toDraft = html => {
-    const contentBlock = htmlToDraft(html);
-    const contentState = ContentState.createFromBlockArray(
-      contentBlock.contentBlocks
-    );
-    return EditorState.createWithContent(contentState);
-  };
-
-  onEditorStateChange = editorState => {
+  toggle = () => {
+    this.hideLeft();
     this.setState({
-      editorState
+      collapsed: !this.state.collapsed
     });
   };
-
-  add = isHTML => {
-    const body = isHTML ? this.getHTML() : this.getMarkDown();
-    console.log(body);
-    const { title } = this.state;
-    // return;
-    // fetch("http://localhost:3000/api/article/add", {
-    //   method: "POST",
-    //   mode: "cors",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify({
-    //     body: this.getHTML(),
-    //     title
-    //   })
-    // });
+  to = ({ key }) => {
+    const { push } = this.props.history
+    push(key)
   };
-
-  changTitle = event => {
-    this.setState({ title: event.target.value });
-  };
-
   render() {
-    const { editorState } = this.state;
     return (
-      <div>
-        <CardHeader title="发表页面" />
-        <TextField
-          hintText="文章标题"
-          value={this.state.title}
-          onChange={this.changTitle}
-          fullWidth={true}
-        />
-        <Editor
-          editorState={editorState}
-          wrapperClassName="editor-wrapper"
-          editorClassName="demo-editor"
-          onEditorStateChange={this.onEditorStateChange}
-          toolbar={{
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-            alignmentEnabled: false,
-            urlEnabled: false,
-            image: {
-              popupClassName: "draft-wysiwyg-image-modal",
-              uploadCallback: uploadImageCallBack,
-              urlEnabled: false,
-              alt: { present: false, mandatory: false }
-            }
-          }}
-        />
-        <RaisedButton
-          label="存为html"
-          onClick={() => this.add(true)}
-          style={{ marginRight: 20 }}
-        />
-        <RaisedButton label="存为markdonw" onClick={() => this.add(false)} />
-      </div>
+      < Layout style={{ height: "100vh" }
+      }>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          onClick={this.hideLeft}
+        >
+          <div className="logo" />
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} onClick={this.to}>
+            <Menu.Item key="/">
+              <Icon type="user" />
+              <span>首页</span>
+            </Menu.Item>
+            <SubMenu title={<span><Icon type="appstore" /><span>文章</span></span>}>
+              <Menu.Item key="/article">编辑器</Menu.Item>
+              <Menu.Item key="/article/draft">草稿箱</Menu.Item>
+              <Menu.Item key="/manage">已发布</Menu.Item>
+            </SubMenu>
+            <Menu.Item key="3">
+              <Icon type="upload" />
+              <span>统计</span>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout>
+          <Header style={{ background: "#fff", padding: 0 }}>
+            <Icon
+              className="trigger"
+              type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
+              onClick={this.toggle}
+            />
+          </Header>
+          <div style={{ padding: "24px 16px", overflow: "auto" }}>
+            <Content
+              style={{
+                padding: 24,
+                background: "#fff",
+                minHeight: 280
+              }}
+            >
+              <Switch>
+                <Route exact path="/" component={Index}></Route>
+                <Route exact path="/article" component={Edit}></Route>
+                <Route path="/article/draft" component={Draft}></Route>
+                <Route path="/article/manage" component={Manage}></Route>
+              </Switch>
+            </Content>
+          </div>
+        </Layout>
+      </Layout >
     );
   }
 }
 
-function uploadImageCallBack(file) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/upload");
-    const data = new FormData();
-    data.append("file", file);
-    xhr.send(data);
-    xhr.addEventListener("load", () => {
-      const response = JSON.parse(xhr.responseText);
-      resolve(response);
-    });
-    // xhr.addEventListener("error", () => {
-    //    const error = JSON.parse(xhr.responseText);
-    //   reject(error);
-    // });
-  });
-}
-
-export default Ed;
+export default SiderDemo;
