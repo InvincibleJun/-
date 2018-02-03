@@ -10,7 +10,7 @@ class Draft extends Component {
     }
   }
   async componentWillMount() {
-    const data = await getDraft()
+    const data = await getDraft({ page: 1, size: 12 })
     this.setState({ data })
   }
   render() {

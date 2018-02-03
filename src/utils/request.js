@@ -33,6 +33,16 @@ export default function request(url, options) {
     };
     newOptions.body = JSON.stringify(newOptions.body);
   }
+  if (newOptions.query !== undefined && newOptions.query !== null && newOptions.query !== '') {
+    let tmp = []
+    Object.keys(newOptions.query).forEach(key => {
+      let val = newOptions.query[key]
+      if (val) {
+        tmp.push(encodeURIComponent(key) + '=' + encodeURIComponent(newOptions.query[key]))
+      }
+    })
+    url = url + '?' + tmp.join('&')
+  }
 
   return fetch(url, newOptions)
     .then(checkStatus)

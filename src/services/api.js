@@ -2,7 +2,9 @@ import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function getDraft(params) {
-  return request(`http://localhost:3000/api/draft/get`);
+  return request(`http://localhost:3000/api/draft/get`, {
+    query: params
+  });
 }
 
 export async function removeRule(params) {
