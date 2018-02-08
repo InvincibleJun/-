@@ -1,24 +1,23 @@
 import React, { Component } from "react";
 import { Layout, Menu, Icon } from "antd";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from 'react-router-dom'
-import Index from './views'
-import Edit from './views/article'
-import Draft from './views/article/draft'
-import Manage from './views/article/manage'
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Index from "./views";
+import Edit from "./views/article";
+import Draft from "./views/article/draft";
+import Manage from "./views/article/manage";
+import * as userActions from "../actions/user";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 const { Header, Sider, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 
-class SiderDemo extends Component {
+class App extends Component {
   state = {
     collapsed: false,
     timer: null
   };
+  componentWillMount() {}
   componentDidMount() {
     this.hideLeft();
   }
@@ -39,13 +38,12 @@ class SiderDemo extends Component {
     });
   };
   to = ({ key }) => {
-    const { push } = this.props.history
-    push(key)
+    const { push } = this.props.history;
+    push(key);
   };
   render() {
     return (
-      < Layout style={{ height: "100vh" }
-      }>
+      <Layout style={{ height: "100vh" }}>
         <Sider
           trigger={null}
           collapsible
@@ -53,12 +51,24 @@ class SiderDemo extends Component {
           onClick={this.hideLeft}
         >
           <div className="logo" />
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} onClick={this.to}>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            onClick={this.to}
+          >
             <Menu.Item key="/">
               <Icon type="user" />
               <span>首页</span>
             </Menu.Item>
-            <SubMenu title={<span><Icon type="appstore" /><span>文章</span></span>}>
+            <SubMenu
+              title={
+                <span>
+                  <Icon type="appstore" />
+                  <span>文章</span>
+                </span>
+              }
+            >
               <Menu.Item key="/article">编辑器</Menu.Item>
               <Menu.Item key="/article/draft">草稿箱</Menu.Item>
               <Menu.Item key="/manage">已发布</Menu.Item>
@@ -86,17 +96,26 @@ class SiderDemo extends Component {
               }}
             >
               <Switch>
-                <Route exact path="/" component={Index}></Route>
-                <Route exact path="/article" component={Edit}></Route>
-                <Route path="/article/draft" component={Draft}></Route>
-                <Route path="/article/manage" component={Manage}></Route>
+                <Route exact path="/" component={Index} />
+                <Route exact path="/article" component={Edit} />
+                <Route path="/article/draft" component={Draft} />
+                <Route path="/article/manage" component={Manage} />
               </Switch>
             </Content>
           </div>
         </Layout>
-      </Layout >
+      </Layout>
     );
   }
 }
 
-export default SiderDemo;
+const mapStateToProps = state => {
+  console.log(state);
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return;
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

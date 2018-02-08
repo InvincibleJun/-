@@ -1,39 +1,45 @@
-import { stringify } from 'qs';
-import request from '../utils/request';
+// import { stringify } from "qs";
+import request from "../utils/request";
 
-export async function getDraft(params) {
+export async function getDraft({ query }) {
   return request(`http://localhost:3000/api/draft/get`, {
-    query: params
+    query
   });
 }
 
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'delete',
-    },
+export async function postDraft({ query }) {
+  return request(`http://localhost:3000/api/draft/post`, {
+    query
   });
+}
+
+export async function removeRule({ query }) {
+  return request(`http://localhost:3000/api/draft/post`, {
+    query
+  });
+}
+
+export async function getUserInfo() {
+  return request(`http://localhost:3000/api/user/get`);
 }
 
 export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request("/api/rule", {
+    method: "POST",
     body: {
       ...params,
-      method: 'post',
-    },
+      method: "post"
+    }
   });
 }
 
 export async function fakeSubmitForm(params) {
-  return request('/api/forms', {
-    method: 'POST',
-    body: params,
+  return request("/api/forms", {
+    method: "POST",
+    body: params
   });
 }
 
 export async function fakeChartData() {
-  return request('/api/fake_chart_data');
+  return request("/api/fake_chart_data");
 }
