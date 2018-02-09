@@ -8,5 +8,7 @@ export const user = (state = data, action) => {
     return Object.assign({}, state, {
       userinfo: action.data
     });
+  } else {
+    return data;
   }
 };

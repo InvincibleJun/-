@@ -5,7 +5,7 @@ import Index from "./views";
 import Edit from "./views/article";
 import Draft from "./views/article/draft";
 import Manage from "./views/article/manage";
-import * as userActions from "../actions/user";
+import * as userActions from "./actions/user";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -17,7 +17,12 @@ class App extends Component {
     collapsed: false,
     timer: null
   };
-  componentWillMount() {}
+  componentWillMount() {
+    const { user, fetchUserInfo } = this.props;
+    if (!user.loading) {
+      fetchUserInfo();
+    }
+  }
   componentDidMount() {
     this.hideLeft();
   }
@@ -110,12 +115,11 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
-  return {};
+  return { user: state.user };
 };
 
-const mapDispatchToProps = dispatch => {
-  return;
-};
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(userActions, dispatch);
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

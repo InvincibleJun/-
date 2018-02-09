@@ -14,7 +14,7 @@ ReactDOM.render(
   <MuiThemeProvider>
     <Provider store={store}>
       <Router>
-        <Route path="/" component={load} />
+        <Route path="/" component={App} />
       </Router>
     </Provider>
   </MuiThemeProvider>,

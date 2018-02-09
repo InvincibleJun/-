@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { getDraft, postDraft } from "../../services/api";
-import Item from "antd/lib/list/Item";
+// import Item from "antd/lib/list/Item";
+import * as draftActions from "../../actions/draft";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 class Draft extends Component {
   constructor(props) {
@@ -9,9 +12,9 @@ class Draft extends Component {
       data: []
     };
   }
-  async componentWillMount() {
-    const data = await getDraft({ query: { page: 1, size: 12 } });
-    this.setState({ data });
+  componentWillMount() {
+    const { getDraft } = this.props;
+    getDraft({ query: { page: 1, size: 12 } });
   }
 
   post = _id => {
@@ -19,10 +22,10 @@ class Draft extends Component {
   };
 
   render() {
-    const { data } = this.state;
+    const { draft } = this.props;
     return (
       <div>
-        {data.map(item => (
+        {draft.data.map(item => (
           <div key={item._id}>
             <div>{item.title}</div>
             <div>{item.createTime}</div>
@@ -34,4 +37,12 @@ class Draft extends Component {
   }
 }
 
-export default Draft;
+const mapStateToProps = state => {
+  return { draft: state.draft };
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(draftActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Draft);
