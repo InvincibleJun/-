@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { getDraft, postDraft } from "../../services/api";
-// import Item from "antd/lib/list/Item";
+import { List } from "antd";
 import * as draftActions from "../../actions/draft";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+
+const data = [1, 2, 3, 4, 5];
 
 class Draft extends Component {
   constructor(props) {
@@ -25,6 +27,15 @@ class Draft extends Component {
     const { draft } = this.props;
     return (
       <div>
+        <List
+          dataSource={draft.data}
+          renderItem={item => (
+            <List.Item actions={[<a>发表</a>, <a>编辑</a>, <a>删除</a>]}>
+              <h3>{item.title}</h3>
+              <span>{item.createTime}</span>
+            </List.Item>
+          )}
+        />
         {draft.data.map(item => (
           <div key={item._id}>
             <div>{item.title}</div>
