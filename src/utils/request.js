@@ -1,4 +1,6 @@
-import { notification } from 'antd';
+import { notification } from "antd";
+
+const baseUrl = "http://localhost:3000";
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -6,7 +8,7 @@ function checkStatus(response) {
   }
   notification.error({
     message: `请求错误 ${response.status}: ${response.url}`,
-    description: response.statusText,
+    description: response.statusText
   });
   const error = new Error(response.statusText);
   error.response = response;
@@ -24,40 +26,49 @@ export default function request(url, options) {
   const defaultOptions = {
     // credentials: 'include',
   };
+  url = /http:\/\/|https:\/\//.test(url) ? url : baseUrl + url;
   const newOptions = { ...defaultOptions, ...options };
-  if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
+  if (newOptions.method === "POST" || newOptions.method === "PUT") {
     newOptions.headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
-      ...newOptions.headers,
+      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
+      ...newOptions.headers
     };
     newOptions.body = JSON.stringify(newOptions.body);
   }
-  if (newOptions.query !== undefined && newOptions.query !== null && newOptions.query !== '') {
-    let tmp = []
+  if (
+    newOptions.query !== undefined &&
+    newOptions.query !== null &&
+    newOptions.query !== ""
+  ) {
+    let tmp = [];
     Object.keys(newOptions.query).forEach(key => {
-      let val = newOptions.query[key]
+      let val = newOptions.query[key];
       if (val) {
-        tmp.push(encodeURIComponent(key) + '=' + encodeURIComponent(newOptions.query[key]))
+        tmp.push(
+          encodeURIComponent(key) +
+            "=" +
+            encodeURIComponent(newOptions.query[key])
+        );
       }
-    })
-    url = url + '?' + tmp.join('&')
+    });
+    url = url + "?" + tmp.join("&");
   }
 
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => response.json())
-    .catch((error) => {
+    .catch(error => {
       if (error.code) {
         notification.error({
           message: error.name,
-          description: error.message,
+          description: error.message
         });
       }
-      if ('stack' in error && 'message' in error) {
+      if ("stack" in error && "message" in error) {
         notification.error({
           message: `请求错误: ${url}`,
-          description: error.message,
+          description: error.message
         });
       }
       return error;

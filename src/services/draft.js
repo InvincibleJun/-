@@ -1,7 +1,9 @@
 import request from "../utils/request";
 
-export async function fetchDraft({ query }) {
-  return request(`http://localhost:3000/api/draft/get`, {
-    query
-  });
+export function fetchDraft(arg) {
+  return request("/api/draft/get", arg);
+}
+
+export function publish(arg) {
+  return request("/api/draft/publish", arg);
 }
