@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Layout, Menu, Icon } from "antd";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Index from "./views";
-import Edit from "./views/article";
+import Edit from "./views/article/index2";
 import Draft from "./views/article/draft";
 import Manage from "./views/article/manage";
 import * as userActions from "./actions/user";
@@ -20,7 +20,7 @@ class App extends Component {
   componentWillMount() {
     const { user, fetchUserInfo } = this.props;
     if (!user.loading) {
-      fetchUserInfo();
+      // fetchUserInfo();
     }
   }
   componentDidMount() {

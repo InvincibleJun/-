@@ -133,13 +133,13 @@ class Ed extends Component {
 function uploadImageCallBack(file) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/upload");
+    xhr.open("POST", "http://localhost:10086/api/draft/upload");
     const data = new FormData();
     data.append("file", file);
     xhr.send(data);
     xhr.addEventListener("load", () => {
       const response = JSON.parse(xhr.responseText);
-      resolve(response);
+      resolve(response.data.pathname);
     });
     // xhr.addEventListener("error", () => {
     //    const error = JSON.parse(xhr.responseText);
