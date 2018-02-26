@@ -1,12 +1,25 @@
 import React, { Component } from "react";
-import 'simplemde/dist/simplemde.min.css'
+import 'simplemde/dist/simplemde.min.css';
+import styled from 'styled-components';
 // import SimpleMDE from 'simplemde';
+import MdUpLoad from '../../components/md-upload';
+
+// const UploadContainer = styled.div`
+//     width: 200px;
+//     height: 120px;
+//     border: 1px solid black;
+//     position: absolute;
+//     top: 50px;
+//     z-index: 10;
+// `
+
 class Ed extends Component {
   constructor(props) {
     super(props)
     this.state = {
       file: '',
-      value: '123'
+      value: '123',
+      uploadStatus: false
     }
   }
   componentDidMount() {
@@ -18,8 +31,7 @@ class Ed extends Component {
         {
           name: "custom",
           action: (editor) => {
-            console.log(this.state.value)
-            // this.simplemde.value('11')
+            this.setState({ uploadStatus: true })
           },
           className: "fa fa-star",
           title: "Custom Button",
@@ -34,44 +46,25 @@ class Ed extends Component {
     })
   }
 
-  handlerChange = event => {
-    this.setState({ value: event.target.value });
-  }
-
-  upLoadImage = event => {
-    const file = event.target.files[0]
-    console.log(file)
-    debugger
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:10086/api/draft/upload");
-    const data = new FormData();
-    data.append("file", file);
-    xhr.send(data);
-    xhr.addEventListener("load", () => {
-      // const response = JSON.parse(xhr.responseText);
-    });
-    // xhr.addEventListener("error", () => {
-    //    const error = JSON.parse(xhr.responseText);
-    //   reject(error);
-    // });
+  close = () => {
+    this.setState({ uploadStatus: false })
   }
 
   render() {
+    const { uploadStatus } = this.state
+    const d = document.getElementsByClassName('fa-star')[0]
+    // const t = document.getElementsByClassName('editor-toolbar')[0]
+    // 确定编辑器渲染
+    if (d) {
+      console.log(d.offsetTop)
+    }
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         <textarea id="MyID" />
-        <div style={{ width: 100, height: 100, border: '1px solid black' }}>
-          <p>upload</p>
-          <input type="file" name="file" onChange={this.upLoadImage} />
-        </div>
+        {uploadStatus && <MdUpLoad show={uploadStatus} left={d.offsetLeft} close={this.close} ide={this.simplemde} />}
       </div>
     );
   }
-}
-
-function uploadImageCallBack(file) {
-
-
 }
 
 export default Ed;

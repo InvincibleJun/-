@@ -8,7 +8,7 @@ import Manage from "./views/article/manage";
 import * as userActions from "./actions/user";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-
+import './App.css';
 const { Header, Sider, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 
