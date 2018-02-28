@@ -67,7 +67,6 @@ class Ed extends Component {
 
   add = isHTML => {
     const body = isHTML ? this.getHTML() : this.getMarkDown();
-    console.log(body);
     const { title } = this.state;
     // return;
     fetch("http://localhost:3000/api/draft/add", {
