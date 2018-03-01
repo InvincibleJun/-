@@ -35,6 +35,7 @@ class Ed extends Component {
         "italic",
         "heading",
         "|",
+        "link",
         "quote",
         "image",
         "|",
