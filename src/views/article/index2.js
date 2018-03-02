@@ -6,7 +6,7 @@ import MdUpLoad from "../../components/md-upload";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
 
-import { addDraft } from "../../services/draft";
+import { addDraft, getOneDraft } from "../../services/draft";
 // const UploadContainer = styled.div`
 //     width: 200px;
 //     height: 120px;
@@ -16,6 +16,20 @@ import { addDraft } from "../../services/draft";
 //     z-index: 10;
 // `
 
+function getQuery(sr) {
+  var match,
+    urlParams = {},
+    pl = /\+/g,
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function(s) {
+      return decodeURIComponent(s.replace(pl, " "));
+    },
+    q = sr.substr(1);
+  while ((match = search.exec(q)))
+    urlParams[decode(match[1])] = decode(match[2]);
+  return urlParams;
+}
+
 class Ed extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +37,7 @@ class Ed extends Component {
       file: "",
       value: "",
       title: "",
+      _id: "",
       uploadStatus: false
     };
   }
@@ -57,6 +72,15 @@ class Ed extends Component {
     s.codemirror.on("change", () => {
       this.setState({ value: s.value() });
     });
+
+    const { search } = this.props.location;
+    if (search) {
+      const { _id } = getQuery(search);
+      getOneDraft({ _id }).then(res => {
+        this.setState({ title: res.title, _id: res._id });
+        s.value(res.body);
+      });
+    }
   }
 
   close = () => {
@@ -64,13 +88,14 @@ class Ed extends Component {
   };
 
   pushDraft = () => {
-    const { title } = this.state;
+    const { title, _id } = this.state;
     const body = this.simplemde.value();
     addDraft({
+      _id,
       title,
       body
     }).then(res => {
-      console.log("success");
+      this.setState({ _id: res._id });
     });
   };
 

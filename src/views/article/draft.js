@@ -4,7 +4,7 @@ import { List } from "antd";
 import * as draftActions from "../../actions/draft";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-
+import { Link } from "react-router-dom";
 class Draft extends Component {
   constructor(props) {
     super(props);
@@ -14,9 +14,11 @@ class Draft extends Component {
   }
   componentWillMount() {
     const { getDraft } = this.props;
-    getDraft({ query: { page: 1, size: 12 } });
+    getDraft({ query: { page: 1, size: 15 } });
   }
-
+  edit() {
+    console.log(this.props);
+  }
   render() {
     const { publishDraft, draft } = this.props;
     console.log(this.props);
@@ -30,7 +32,7 @@ class Draft extends Component {
                 <a onClick={() => publishDraft({ query: { _id: item._id } })}>
                   发表
                 </a>,
-                <a>编辑</a>,
+                <Link to={"/article?_id=" + item._id}>编辑</Link>,
                 <a>删除</a>
               ]}
             >

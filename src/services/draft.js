@@ -11,3 +11,7 @@ export function publish(arg) {
 export function addDraft(body) {
   return request("/api/draft/add", { method: "POST", body });
 }
+
+export function getOneDraft(query) {
+  return request("/api/draft/getOne", { query });
+}

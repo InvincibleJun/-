@@ -34,7 +34,6 @@ export default function request(url, options) {
       "Content-Type": "application/json; charset=utf-8",
       ...newOptions.headers
     };
-    debugger;
     newOptions.body = JSON.stringify(newOptions.body);
   }
   if (
@@ -59,6 +58,7 @@ export default function request(url, options) {
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => response.json())
+    .then(response => (response.success ? response.data : null))
     .catch(error => {
       if (error.code) {
         notification.error({
