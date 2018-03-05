@@ -32,7 +32,10 @@ class Draft extends Component {
   }
   delRequest() {
     const { _id } = this.state.del;
-    this.delDraft({ _id });
+    const { delDraft } = this.props;
+    delDraft({ _id }, () => {
+      this.setState({ delDialog: false })
+    })
   }
   render() {
     const { publishDraft, draft } = this.props;

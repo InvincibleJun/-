@@ -18,10 +18,11 @@ export const publishDraft = arg => {
 
 const saveDraft = data => ({ type: "SAVE_DRAFT_DATA", data });
 
-export const delDraft = arg => {
+export const delDraft = (arg, cb) => {
   return dispatch => {
     del(arg).then(res => {
       dispatch(getDraft({}));
+      cb()
     });
   };
 };
