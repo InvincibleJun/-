@@ -1,4 +1,4 @@
-import { fetchDraft, publish } from "../services/draft";
+import { fetchDraft, publish, del } from "../services/draft";
 
 export const getDraft = arg => {
   return dispatch => {
@@ -17,3 +17,11 @@ export const publishDraft = arg => {
 };
 
 const saveDraft = data => ({ type: "SAVE_DRAFT_DATA", data });
+
+export const delDraft = arg => {
+  return dispatch => {
+    del(arg).then(res => {
+      dispatch(getDraft({}));
+    });
+  };
+};

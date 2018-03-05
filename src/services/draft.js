@@ -15,3 +15,7 @@ export function addDraft(body) {
 export function getOneDraft(query) {
   return request("/api/draft/getOne", { query });
 }
+
+export function del(query) {
+  return request("/api/draft/del", { query });
+}
