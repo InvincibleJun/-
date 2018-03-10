@@ -19,3 +19,6 @@ export function getOneDraft(query) {
 export function del(query) {
   return request("/api/draft/del", { query });
 }
+
+
+// export function getList()

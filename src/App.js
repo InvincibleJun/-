@@ -76,7 +76,7 @@ class App extends Component {
             >
               <Menu.Item key="/article">编辑器</Menu.Item>
               <Menu.Item key="/article/draft">草稿箱</Menu.Item>
-              <Menu.Item key="/manage">已发布</Menu.Item>
+              <Menu.Item key="/article/manage">已发布</Menu.Item>
             </SubMenu>
             <Menu.Item key="3">
               <Icon type="upload" />
