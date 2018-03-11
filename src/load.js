@@ -16,7 +16,7 @@ class Load extends Component {
   }
 
   componentDidMount() {
-    window.particlesJS("bg", config);
+    // window.particlesJS("bg", config);
   }
 
   githubLogin = event => {

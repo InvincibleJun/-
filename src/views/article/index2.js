@@ -1,33 +1,31 @@
 import React, { Component } from "react";
 import "simplemde/dist/simplemde.min.css";
-import styled from "styled-components";
 import SimpleMDE from "simplemde";
 import MdUpLoad from "../../components/md-upload";
 import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
-
+import { Input } from 'antd';
+import { Select } from 'antd';
 import { addDraft, getOneDraft } from "../../services/draft";
-// const UploadContainer = styled.div`
-//     width: 200px;
-//     height: 120px;
-//     border: 1px solid black;
-//     position: absolute;
-//     top: 50px;
-//     z-index: 10;
-// `
+import { Button } from 'antd';
+const Option = Select.Option;
 
 function getQuery(sr) {
   var match,
     urlParams = {},
     pl = /\+/g,
     search = /([^&=]+)=?([^&]*)/g,
-    decode = function(s) {
+    decode = function (s) {
       return decodeURIComponent(s.replace(pl, " "));
     },
     q = sr.substr(1);
   while ((match = search.exec(q)))
     urlParams[decode(match[1])] = decode(match[2]);
   return urlParams;
+}
+
+const children = [];
+for (let i = 10; i < 36; i++) {
+  children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
 }
 
 class Ed extends Component {
@@ -116,12 +114,25 @@ class Ed extends Component {
     }
     return (
       <div style={{ position: "relative" }}>
-        <TextField
+        {/* <TextField
           hintText="文章标题"
           value={title}
           onChange={this.changTitle}
           fullWidth={true}
-        />
+        /> */}
+        <div>
+          <label>标题</label><Input style={{ width: 500 }} />
+        </div>
+        <div>
+          <label>标签</label>
+          <Select
+            mode="tags"
+            style={{ width: 500 }}
+            tokenSeparators={[',']}
+          >
+            {children}
+          </Select>
+        </div>
         <textarea id="MyID" />
         {uploadStatus && (
           <MdUpLoad
