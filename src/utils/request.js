@@ -1,6 +1,6 @@
 import { notification } from "antd";
 
-const baseUrl = "http://localhost:10086";
+const baseUrl = '/api'
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -28,14 +28,19 @@ export default function request(url, options) {
   };
   url = /http:\/\/|https:\/\//.test(url) ? url : baseUrl + url;
   const newOptions = { ...defaultOptions, ...options };
-  if (newOptions.method === "POST" || newOptions.method === "PUT") {
-    newOptions.headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json; charset=utf-8",
-      ...newOptions.headers
-    };
-    newOptions.body = JSON.stringify(newOptions.body);
+  
+  if (newOptions.processData !== false) {
+    if (newOptions.method === "POST" || newOptions.method === "PUT") {
+      newOptions.headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json; charset=utf-8",
+        ...newOptions.headers
+      };
+      newOptions.body = JSON.stringify(newOptions.body);
+    }
   }
+
+  console.log(newOptions)
   if (
     newOptions.query !== undefined &&
     newOptions.query !== null &&

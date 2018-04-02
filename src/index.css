@@ -78,6 +78,7 @@ body {
   background-color: #fff;
   -webkit-border-radius: 0;
 }
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 8px;
@@ -90,8 +91,25 @@ body {
   outline-offset: -2px;
   border: 2px solid #fff;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   height: 50px;
   background-color: #9f9f9f;
   -webkit-border-radius: 4px;
+}
+
+
+/* tile uploaded pictures */
+.upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 200px;
+  margin-right: 8px;
+}
+
+.upload-list-inline .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+
+.upload-list-inline .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
 }

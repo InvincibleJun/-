@@ -1,150 +1,134 @@
 import React, { Component } from "react";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import draftToHtml from "draftjs-to-html";
-import draftToMarkdown from "draftjs-to-markdown";
-import htmlToDraft from "html-to-draftjs";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText
-} from "material-ui/Card";
-import styled from "styled-components";
+import Ide from './_index/ide'
+import { addDraft, getOneDraft } from "../../services/draft";
+import { addTag, getTag } from "../../services/tag";
+import { Input, Select, Button, Modal } from 'antd';
+import getQuery from '../../utils/getQuery';
+import styled from 'styled-components';
+const Option = Select.Option;
 
-import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
+const Label = styled.label`
+  padding: 0 20px;
+`
 
-// var converter = require("html-to-markdown");
+const Line = styled.div`
+  line-height: 40px;
+`
 
 class Ed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
-      title: ""
+      tagList: [],
+      visible: false,
+      file: "",
+      value: "",
+      title: "",
+      _id: "",
+      tags: []
     };
   }
 
   componentDidMount() {
-    // fetch("http://localhost:3000/api/article/get")
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     const editorState = this.toDraft(data[2].body);
-    //     this.setState({ editorState });
-    //   });
+    this.getTagList()
+    const { search } = this.props.location;
+    if (search) {
+      const { _id } = getQuery(search);
+      getOneDraft({ _id }).then(res => {
+        this.setState({ title: res.title, _id: res._id, value: res.body,tags: res.tags });
+      });
+    }
   }
 
-  getHTML = () => {
-    return draftToHtml(
-      convertToRaw(this.state.editorState.getCurrentContent())
-    );
-  };
+  getTagList = () => {
+    getTag().then(res => {
+      this.setState({tagList: res})
+    })
+  }
 
-  getMarkDown = () => {
-    const rawContentState = convertToRaw(
-      this.state.editorState.getCurrentContent()
-    );
-    return draftToMarkdown(rawContentState);
-  };
-
-  toDraft = html => {
-    const contentBlock = htmlToDraft(html);
-    const contentState = ContentState.createFromBlockArray(
-      contentBlock.contentBlocks
-    );
-    return EditorState.createWithContent(contentState);
-  };
-
-  onEditorStateChange = editorState => {
-    this.setState({
-      editorState
+  pushDraft = () => {
+    const { title, _id, value, tags } = this.state;
+    addDraft({
+      _id,
+      title,
+      tags,
+      body: value
+    }).then(res => {
+      this.setState({ _id: res._id });
     });
   };
 
-  add = isHTML => {
-    const body = isHTML ? this.getHTML() : this.getMarkDown();
-    const { title } = this.state;
-    // return;
-    fetch("http://localhost:3000/api/draft/add", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        body: this.getHTML(),
-        title
-      })
-    });
+  clearDraft = () => {
+    this.simplemde.value("");
   };
 
-  changTitle = event => {
-    this.setState({ title: event.target.value });
+  changTitle = e => {
+    this.setState({ title: e.target.value });
   };
+
+  update = value => {
+    this.setState({ value })
+  };
+
+  showAddTag = () => {
+    this.setState({ visible: true })
+  }
+
+  addTagOk = () => {
+    let value = this.refs['newTagInput'].input.value
+    value && 
+    addTag({name: value}).then(res => {
+      this.addTagCancel()
+      getTag().then(res => {})
+    })
+  }
+
+  addTagCancel = () => {
+    this.setState({ visible: false }, () => {
+      this.refs['newTagInput'].input.value = ''
+    })
+  }
+
+  tagsChange = tags =>{ 
+    this.setState({ tags })
+  }
 
   render() {
-    const { editorState } = this.state;
+    const { value, title, visible, tagList, tags} = this.state;
     return (
-      <div>
-        <CardHeader title="发表页面" />
-        <TextField
-          hintText="文章标题"
-          value={this.state.title}
-          onChange={this.changTitle}
-          fullWidth={true}
-        />
-        <Editor
-          editorState={editorState}
-          wrapperClassName="editor-wrapper"
-          editorClassName="demo-editor"
-          onEditorStateChange={this.onEditorStateChange}
-          toolbar={{
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-            alignmentEnabled: false,
-            urlEnabled: false,
-            image: {
-              popupClassName: "draft-wysiwyg-image-modal",
-              uploadCallback: uploadImageCallBack,
-              urlEnabled: false,
-              alt: { present: false, mandatory: false }
-            }
-          }}
-        />
-        <RaisedButton
-          label="存为html"
-          onClick={() => this.add(true)}
-          style={{ marginRight: 20 }}
-        />
-        <RaisedButton label="存为markdonw" onClick={() => this.add(false)} />
+      <div style={{ position: "relative" }}>
+        <Line>
+          <Label>标题</Label>
+          <Input value={title} style={{ width: 500 }} onChange={this.changTitle}/>
+        </Line>
+        <Line>
+          <Label>标签</Label>
+          <Select
+            mode="multiple"
+            value={tags}
+            labelInValue={true}
+            onChange={this.tagsChange}
+            style={{ width: 380, marginRight: 30 }}
+            tokenSeparators={[',']}
+          >
+            {tagList.map(item => (<Option key={item._id}>{item.name}</Option>))}
+          </Select>
+          <Button onClick={this.showAddTag}>新增标签</Button>
+        </Line>
+        <Ide value={value} update={this.update}></Ide>
+        <Modal title="Title"
+          visible={visible}
+          onOk={this.addTagOk}
+          // confirmLoading={this.addTag}
+          onCancel={this.addTagCancel}
+        >
+          <Input ref="newTagInput"/>
+        </Modal>
+        <Button onClick={this.pushDraft}>添加草稿</Button>
+        <Button onClick={this.clearDraft}>清空</Button>
       </div>
     );
   }
-}
-
-function uploadImageCallBack(file) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:10086/api/draft/upload");
-    const data = new FormData();
-    data.append("file", file);
-    xhr.send(data);
-    xhr.addEventListener("load", () => {
-      const response = JSON.parse(xhr.responseText);
-      resolve(response.data.pathname);
-    });
-    // xhr.addEventListener("error", () => {
-    //    const error = JSON.parse(xhr.responseText);
-    //   reject(error);
-    // });
-  });
 }
 
 export default Ed;
