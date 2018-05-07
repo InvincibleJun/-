@@ -1,11 +1,11 @@
-import React,  { Component } from 'react';
+import React, { Component } from 'react'
 
 class Index extends Component {
-  render() {
+  render () {
     return (
       <div>首页</div>
     )
   }
 }
 
-export default Index;
+export default Index

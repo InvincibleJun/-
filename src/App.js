@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Layout, Menu, Icon } from 'antd'
 import { Switch, Route } from 'react-router-dom'
 import Index from './views'
@@ -11,14 +12,19 @@ import { connect } from 'react-redux'
 import './App.css'
 const { Header, Sider, Content } = Layout
 const SubMenu = Menu.SubMenu
-
 class App extends Component {
+  propTypes = {
+    user: PropTypes.object,
+    push: PropTypes.func,
+    history: PropTypes.object
+    // fetchUserInfo: PropTypes.func
+  }
   state = {
     collapsed: false,
     timer: null
   }
   componentWillMount () {
-    const { user, fetchUserInfo } = this.props
+    const { user } = this.props
     if (!user.loading) {
       // fetchUserInfo();
     }

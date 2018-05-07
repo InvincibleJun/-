@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import styled, { keyframes } from 'styled-components'
 
 const fadeIn = keyframes`
   0% {
@@ -8,7 +9,7 @@ const fadeIn = keyframes`
   100% {
     opacity: 1;
   }
-`;
+`
 
 const Container = styled.div`
   position: fixed;
@@ -31,22 +32,20 @@ const Main = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
 
-
-
 class Modal extends Component {
   // com
-  componentWillReceiveProps(newProps, oldProps) {
+  componentWillReceiveProps (newProps, oldProps) {
     if (!newProps) {
     }
   }
-  
-  render() {
+
+  render () {
     const { children, show } = this.props
     return (
       <div>
         {show &&
           <Container>
-            <Main width="300px">{children}</Main>
+            <Main width='300px'>{children}</Main>
           </Container>
         }
 
@@ -55,4 +54,9 @@ class Modal extends Component {
   }
 }
 
-export default Modal;
+Modal.propTypes = {
+  children: PropTypes.object,
+  show: PropTypes.boolean
+}
+
+export default Modal

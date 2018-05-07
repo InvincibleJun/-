@@ -1,28 +1,28 @@
-import { fetchDraft, publish, del } from "../services/draft";
+import { fetchDraft, publish, del } from '../services/draft'
 
 export const getDraft = arg => {
   return dispatch => {
     fetchDraft(arg).then(res => {
-      dispatch(saveDraft(res));
-    });
-  };
-};
+      dispatch(saveDraft(res))
+    })
+  }
+}
 
 export const publishDraft = arg => {
   return dispatch => {
     publish(arg).then(res => {
-      dispatch(getDraft());
-    });
-  };
-};
+      dispatch(getDraft())
+    })
+  }
+}
 
-const saveDraft = data => ({ type: "SAVE_DRAFT_DATA", data });
+const saveDraft = data => ({ type: 'SAVE_DRAFT_DATA', data })
 
 export const delDraft = (arg, cb) => {
   return dispatch => {
     del(arg).then(res => {
-      dispatch(getDraft({}));
+      dispatch(getDraft({}))
       cb()
-    });
-  };
-};
+    })
+  }
+}

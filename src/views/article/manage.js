@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { getList, delArticle } from '../../services/article'
-import { List } from "antd";
-import { Link } from "react-router-dom";
-import Dialog from "material-ui/Dialog";
+import { List } from 'antd'
+// import { Link } from 'react-router-dom'
+// import Dialog from 'material-ui/Dialog'
 
 class Manage extends Component {
   state = {
     data: []
   }
-  componentDidMount() {
+  componentDidMount () {
     this.refresh()
   }
-  refresh(query) {
+  refresh (query) {
     getList(query || {}).then(data => {
       this.setState({ data })
     })
   }
-  publishDraft() {
+  publishDraft () {
 
   }
-  delDraft(_id, draftID) {
+  delDraft (_id, draftID) {
     delArticle({ _id, draftID }).then(res => {
       this.refresh()
     })
   }
-  render() {
+  render () {
     const { data } = this.state
     return (
       <div>
@@ -45,4 +45,4 @@ class Manage extends Component {
   }
 }
 
-export default Manage;
+export default Manage

@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Ide from './_index/ide'
-import { addDraft, getOneDraft } from "../../services/draft";
-import { addTag, getTag } from "../../services/tag";
-import { Input, Select, Button, Modal } from 'antd';
-import getQuery from '../../utils/getQuery';
-import styled from 'styled-components';
-const Option = Select.Option;
+import { addDraft, getOneDraft } from '../../services/draft'
+import { addTag, getTag } from '../../services/tag'
+import { Input, Select, Button, Modal } from 'antd'
+import getQuery from '../../utils/getQuery'
+import styled from 'styled-components'
+const Option = Select.Option
 
 const Label = styled.label`
   padding: 0 20px;
@@ -16,27 +17,27 @@ const Line = styled.div`
 `
 
 class Ed extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       tagList: [],
       visible: false,
-      file: "",
-      value: "",
-      title: "",
-      _id: "",
+      file: '',
+      value: '',
+      title: '',
+      _id: '',
       tags: []
-    };
+    }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getTagList()
-    const { search } = this.props.location;
+    const { search } = this.props.location
     if (search) {
-      const { _id } = getQuery(search);
+      const { _id } = getQuery(search)
       getOneDraft({ _id }).then(res => {
-        this.setState({ title: res.title, _id: res._id, value: res.body,tags: res.tags });
-      });
+        this.setState({ title: res.title, _id: res._id, value: res.body, tags: res.tags })
+      })
     }
   }
 
@@ -47,23 +48,23 @@ class Ed extends Component {
   }
 
   pushDraft = () => {
-    const { title, _id, value, tags } = this.state;
+    const { title, _id, value, tags } = this.state
     addDraft({
       _id,
       title,
       tags,
       body: value
     }).then(res => {
-      this.setState({ _id: res._id });
-    });
+      this.setState({ _id: res._id })
+    })
   };
 
   clearDraft = () => {
-    this.simplemde.value("");
+    this.simplemde.value('')
   };
 
   changTitle = e => {
-    this.setState({ title: e.target.value });
+    this.setState({ title: e.target.value })
   };
 
   update = value => {
@@ -76,7 +77,7 @@ class Ed extends Component {
 
   addTagOk = () => {
     let value = this.refs['newTagInput'].input.value
-    value && 
+    value &&
     addTag({name: value}).then(res => {
       this.addTagCancel()
       getTag().then(res => {})
@@ -89,24 +90,24 @@ class Ed extends Component {
     })
   }
 
-  tagsChange = tags =>{ 
+  tagsChange = tags => {
     this.setState({ tags })
   }
 
-  render() {
-    const { value, title, visible, tagList, tags} = this.state;
+  render () {
+    const { value, title, visible, tagList, tags } = this.state
     return (
-      <div style={{ position: "relative" }}>
+      <div style={{ position: 'relative' }}>
         <Line>
           <Label>标题</Label>
-          <Input value={title} style={{ width: 500 }} onChange={this.changTitle}/>
+          <Input value={title} style={{ width: 500 }} onChange={this.changTitle} />
         </Line>
         <Line>
           <Label>标签</Label>
           <Select
-            mode="multiple"
+            mode='multiple'
             value={tags}
-            labelInValue={true}
+            labelInValue
             onChange={this.tagsChange}
             style={{ width: 380, marginRight: 30 }}
             tokenSeparators={[',']}
@@ -115,20 +116,24 @@ class Ed extends Component {
           </Select>
           <Button onClick={this.showAddTag}>新增标签</Button>
         </Line>
-        <Ide value={value} update={this.update}></Ide>
-        <Modal title="Title"
+        <Ide value={value} update={this.update} />
+        <Modal title='Title'
           visible={visible}
           onOk={this.addTagOk}
           // confirmLoading={this.addTag}
           onCancel={this.addTagCancel}
         >
-          <Input ref="newTagInput"/>
+          <Input ref='newTagInput' />
         </Modal>
         <Button onClick={this.pushDraft}>添加草稿</Button>
         <Button onClick={this.clearDraft}>清空</Button>
       </div>
-    );
+    )
   }
 }
 
-export default Ed;
+Ed.propTypes = {
+  location: PropTypes.string
+}
+
+export default Ed
