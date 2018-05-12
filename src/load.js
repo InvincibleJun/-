@@ -1,64 +1,62 @@
-import React, { Component } from "react";
-import { Card, CardHeader } from "material-ui/Card";
-import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
-import FontIcon from "material-ui/RaisedButton";
-import config from "./assets/config/particles";
-import "./assets/iconfont/iconfont.css";
+import React, { Component } from 'react'
+import { Card } from 'material-ui/Card'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+import './assets/iconfont/iconfont.css'
 
 class Load extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
-      username: "",
-      password: ""
-    };
+      username: '',
+      password: ''
+    }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // window.particlesJS("bg", config);
   }
 
   githubLogin = event => {
-    event.preventDefault();
+    event.preventDefault()
     window.location.href =
-      "https://github.com/login/oauth/authorize?client_id=79c7c7124c99c2c89d7c";
-  };
+      'https://github.com/login/oauth/authorize?client_id=79c7c7124c99c2c89d7c'
+  }
 
-  render() {
+  render () {
     return (
       <Card
         style={{
           width: 400,
-          margin: "200px 0 0 1000px ",
-          padding: "0 50px 50px"
+          margin: '200px 0 0 1000px ',
+          padding: '0 50px 50px'
         }}
       >
         <TextField
           style={{ marginTop: 20 }}
-          hintText="请输入用户名"
-          floatingLabelText="用户名"
-          fullWidth={true}
-          type="text"
+          hintText='请输入用户名'
+          floatingLabelText='用户名'
+          fullWidth
+          type='text'
         />
         <br />
         <TextField
           style={{ marginTop: 20 }}
-          hintText="请输入密码"
-          floatingLabelText="密码"
-          type="password"
-          fullWidth={true}
+          hintText='请输入密码'
+          floatingLabelText='密码'
+          type='password'
+          fullWidth
         />
-        <RaisedButton label="登录" fullWidth={true} style={{ marginTop: 40 }} />
+        <RaisedButton label='登录' fullWidth style={{ marginTop: 40 }} />
         <br />
         <br />
 
         <p onClick={this.githubLogin}>
-          <i className="iconfont icon-github" style={{ fontSize: 22 }} />github登陆
+          <i className='iconfont icon-github' style={{ fontSize: 22 }} />github登陆
         </p>
       </Card>
-    );
+    )
   }
 }
 
-export default Load;
+export default Load

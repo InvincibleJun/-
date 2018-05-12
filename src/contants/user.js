@@ -1,1 +1,1 @@
-const USER_LOAD = "USER_LOAD";
+// const USER_LOAD = "USER_LOAD";
