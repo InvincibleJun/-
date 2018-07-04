@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Layout, Menu, Icon } from 'antd'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import Index from './views'
 import Edit from './views/article/index'
 import Draft from './views/article/draft'
@@ -9,11 +8,46 @@ import Manage from './views/article/manage'
 import * as userActions from './actions/user'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import Left from './components/left-menu'
 import './App.css'
-const { Header, Sider, Content } = Layout
-const SubMenu = Menu.SubMenu
+import styled from 'styled-components'
+
+const config = [
+  {
+    name: '文章',
+    path: '/article'
+  },
+  {
+    name: '其他',
+    path: '/other'
+  }
+]
+
+const Layout = styled.div`
+  display: flex;
+`
+
+const Right = styled.div`
+  flex: 1;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+`
+
+const Header = styled.div`
+  height: 60px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
+  z-index: 1;
+`
+
+const Content = styled.div`
+  flex: 1;
+  background-color: rgb(240, 240, 240);
+`
+
 class App extends Component {
-  propTypes = {
+  static propTypes = {
     user: PropTypes.object,
     push: PropTypes.func,
     history: PropTypes.object
@@ -23,16 +57,16 @@ class App extends Component {
     collapsed: false,
     timer: null
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount() {
     const { user } = this.props
     if (!user.loading) {
       // fetchUserInfo();
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     this.hideLeft()
   }
-  componentDidCatch () {
+  componentDidCatch() {
     clearTimeout(this.state.timer)
   }
   hideLeft = () => {
@@ -41,80 +75,34 @@ class App extends Component {
       this.setState({ collapsed: true })
     }, 2000)
     this.setState({ timer })
-  };
+  }
   toggle = () => {
     this.hideLeft()
     this.setState({
       collapsed: !this.state.collapsed
     })
-  };
+  }
   to = ({ key }) => {
     const { push } = this.props.history
     push(key)
-  };
-  render () {
+  }
+  render() {
+    const { pathname } = this.props.location
+
     return (
       <Layout style={{ height: '100vh' }}>
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          onClick={this.hideLeft}
-        >
-          <div className='logo' />
-          <Menu
-            theme='dark'
-            mode='inline'
-            defaultSelectedKeys={['1']}
-            onClick={this.to}
-          >
-            <Menu.Item key='/'>
-              <Icon type='user' />
-              <span>首页</span>
-            </Menu.Item>
-            <SubMenu
-              title={
-                <span>
-                  <Icon type='appstore' />
-                  <span>文章</span>
-                </span>
-              }
-            >
-              <Menu.Item key='/article'>编辑器</Menu.Item>
-              <Menu.Item key='/article/draft'>草稿箱</Menu.Item>
-              <Menu.Item key='/article/manage'>已发布</Menu.Item>
-            </SubMenu>
-            <Menu.Item key='3'>
-              <Icon type='upload' />
-              <span>统计</span>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout>
-          <Header style={{ background: '#fff', padding: 0 }}>
-            <Icon
-              className='trigger'
-              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
-          </Header>
-          <div style={{ padding: '24px 16px', overflow: 'auto' }}>
-            <Content
-              style={{
-                padding: 24,
-                background: '#fff',
-                minHeight: 280
-              }}
-            >
-              <Switch>
-                <Route exact path='/' component={Index} />
-                <Route exact path='/article' component={Edit} />
-                <Route path='/article/draft' component={Draft} />
-                <Route path='/article/manage' component={Manage} />
-              </Switch>
-            </Content>
-          </div>
-        </Layout>
+        <Left config={config} path={pathname} to={this.to} />
+        <Right>
+          <Header />
+          <Content>
+            <Switch>
+              <Redirect exact from="/" to="/article/2/all/new" />
+              <Route exact path="/article/:type/:tag/:_id" component={Edit} />
+              <Route path="/article/draft" component={Draft} />
+              <Route path="/article/manage" component={Manage} />
+            </Switch>
+          </Content>
+        </Right>
       </Layout>
     )
   }
@@ -124,8 +112,11 @@ const mapStateToProps = state => {
   return { user: state.user }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(userActions, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)

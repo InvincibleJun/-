@@ -6,13 +6,13 @@ import SimpleMDE from 'simplemde'
 import MdUpLoad from '../../../components/md-upload'
 
 class Ide extends Component {
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.simplemde.value()) {
       this.simplemde.value(nextProps.value)
     }
-  };
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     const { value, update } = this.props
     const initialOptions = {
       autoDownloadFontAwesome: false,
@@ -50,27 +50,24 @@ class Ide extends Component {
     }
 
     const allOptions = Object.assign({}, initialOptions, this.props.options)
-    let s = this.simplemde = new SimpleMDE(allOptions)
+    let s = (this.simplemde = new SimpleMDE(allOptions))
     s.codemirror.on('change', () => {
       update(s.value())
     })
   }
 
-  render () {
+  render() {
     return (
       <div>
-        <textarea id='MyID' />
-        <MdUpLoad
-          ref='uploadImage'
-          ide={this.simplemde}
-        />
+        <textarea id="MyID" />
+        <MdUpLoad ref="uploadImage" ide={this.simplemde} />
       </div>
     )
   }
 }
 
 Ide.propTypes = {
-  value: PropTypes.object,
+  value: PropTypes.string.isRequired,
   options: PropTypes.object,
   update: PropTypes.func
 }

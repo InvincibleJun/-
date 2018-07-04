@@ -1,139 +1,113 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Ide from './_index/ide'
-import { addDraft, getOneDraft } from '../../services/draft'
-import { addTag, getTag } from '../../services/tag'
-import { Input, Select, Button, Modal } from 'antd'
-import getQuery from '../../utils/getQuery'
 import styled from 'styled-components'
-const Option = Select.Option
+import { getOneArticle } from '../../services/article'
+import ArticleList from './article-list'
+import ArticleEdit from './article-edit'
 
-const Label = styled.label`
-  padding: 0 20px;
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as tagActions from '../../actions/tag'
+import * as articleActions from '../../actions/article'
+
+const Container = styled.div`
+  display: flex;
+  position: relative;
 `
 
-const Line = styled.div`
-  line-height: 40px;
-`
+let timer
 
 class Ed extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       tagList: [],
-      visible: false,
-      file: '',
       value: '',
       title: '',
-      _id: '',
-      tags: []
+      tags: [],
+      status: -1,
+      newTag: '',
+      show: false,
+      edited: false
     }
   }
 
-  componentDidMount () {
-    this.getTagList()
-    const { search } = this.props.location
-    if (search) {
-      const { _id } = getQuery(search)
-      getOneDraft({ _id }).then(res => {
-        this.setState({ title: res.title, _id: res._id, value: res.body, tags: res.tags })
-      })
-    }
+  componentWillUnmount() {
+    clearInterval(timer)
   }
 
-  getTagList = () => {
-    getTag().then(res => {
-      this.setState({tagList: res})
-    })
+  componentWillReceiveProps(nextProps) {
+    // this.props.
   }
 
-  pushDraft = () => {
-    const { title, _id, value, tags } = this.state
-    addDraft({
-      _id,
-      title,
-      tags,
-      body: value
-    }).then(res => {
-      this.setState({ _id: res._id })
-    })
-  };
+  componentDidMount() {
+    const { type, tag, _id } = this.props.match.params
 
-  clearDraft = () => {
-    this.simplemde.value('')
-  };
-
-  changTitle = e => {
-    this.setState({ title: e.target.value })
-  };
-
-  update = value => {
-    this.setState({ value })
-  };
-
-  showAddTag = () => {
-    this.setState({ visible: true })
+    this.props.changeActive(_id)
+    this.props.fetchTagsData()
+    this.props.fetchGetList({ type, tag })
+    timer = setInterval(() => {
+      if (this.state.edited) {
+        this.saveArticle()
+      }
+    }, 10000)
   }
 
-  addTagOk = () => {
-    let value = this.refs['newTagInput'].input.value
-    value &&
-    addTag({name: value}).then(res => {
-      this.addTagCancel()
-      getTag().then(res => {})
-    })
+  open = _id => {
+    const { type, tag } = this.props.match.params
+    // const { openArticle } = this.props
+    this.setState({ edited: false })
+    this.props.history.push(`/article/${type}/${tag}/${_id}`)
+    this.props.changeActive(_id)
+    // openArticle(_id, active)
+    // this.props.openArticle(_id, active)
   }
 
-  addTagCancel = () => {
-    this.setState({ visible: false }, () => {
-      this.refs['newTagInput'].input.value = ''
-    })
+  push = (key, value) => {
+    this.props.match.params[key] = value
+    const { type, tag, _id } = this.props.match.params
+    this.props.history.push(`/article/${type}/${tag}/${_id}`)
+    this.props.fetchGetList({ type, tag })
   }
 
-  tagsChange = tags => {
-    this.setState({ tags })
-  }
+  render() {
+    const { fetchAddTag, fetchAddArticle, tag, article, match } = this.props
+    const { list: tagList } = tag
+    const { list: articleList, active } = article
+    const { _id } = match.params
 
-  render () {
-    const { value, title, visible, tagList, tags } = this.state
     return (
-      <div style={{ position: 'relative' }}>
-        <Line>
-          <Label>标题</Label>
-          <Input value={title} style={{ width: 500 }} onChange={this.changTitle} />
-        </Line>
-        <Line>
-          <Label>标签</Label>
-          <Select
-            mode='multiple'
-            value={tags}
-            labelInValue
-            onChange={this.tagsChange}
-            style={{ width: 380, marginRight: 30 }}
-            tokenSeparators={[',']}
-          >
-            {tagList.map(item => (<Option key={item._id}>{item.name}</Option>))}
-          </Select>
-          <Button onClick={this.showAddTag}>新增标签</Button>
-        </Line>
-        <Ide value={value} update={this.update} />
-        <Modal title='Title'
-          visible={visible}
-          onOk={this.addTagOk}
-          // confirmLoading={this.addTag}
-          onCancel={this.addTagCancel}
-        >
-          <Input ref='newTagInput' />
-        </Modal>
-        <Button onClick={this.pushDraft}>添加草稿</Button>
-        <Button onClick={this.clearDraft}>清空</Button>
-      </div>
+      <Container style={{ position: 'relative' }}>
+        <ArticleList
+          open={this.open}
+          list={tagList}
+          articleList={articleList}
+          push={this.push}
+          active={_id}
+        />
+        <ArticleEdit
+          list={tagList}
+          active={active}
+          save={fetchAddArticle}
+          fetchAddTag={fetchAddTag}
+        />
+      </Container>
     )
   }
 }
 
-Ed.propTypes = {
-  location: PropTypes.string
+const mapStateToProps = state => {
+  return {
+    tag: state.tag,
+    article: state.article
+  }
 }
 
-export default Ed
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ ...tagActions, ...articleActions }, dispatch)
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Ed)

@@ -2,7 +2,7 @@ import { notification } from 'antd'
 
 const baseUrl = '/api'
 
-function checkStatus (response) {
+function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response
   }
@@ -22,7 +22,7 @@ function checkStatus (response) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request (url, options) {
+export default function request(url, options) {
   const defaultOptions = {
     // credentials: 'include',
   }
@@ -40,7 +40,6 @@ export default function request (url, options) {
     }
   }
 
-  console.log(newOptions)
   if (
     newOptions.query !== undefined &&
     newOptions.query !== null &&
