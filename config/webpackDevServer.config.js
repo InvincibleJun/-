@@ -85,7 +85,7 @@ module.exports = function(proxy, allowedHost) {
     public: allowedHost,
     proxy: {
       '/api': {
-        target: 'http://localhost:10086'
+        target: 'http://120.78.222.240:10086'
       },
       '/static': {
         target: 'http://120.78.222.240'
