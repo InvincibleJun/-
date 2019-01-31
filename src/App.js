@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import Index from './views'
-import Edit from './views/article'
+import Edit from './views/article/Index'
 import Draft from './views/article/draft'
 import Manage from './views/article/manage'
 import * as userActions from './actions/user'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Left from './components/left-menu'
+import LeftMenu from './components/LeftMenu'
 import './App.css'
 import styled from 'styled-components'
 
@@ -53,54 +52,26 @@ class App extends Component {
     history: PropTypes.object
     // fetchUserInfo: PropTypes.func
   }
-  // state = {
-  //   collapsed: false,
-  //   timer: null
-  // }
-  // UNSAFE_componentWillMount() {
-  //   const { user } = this.props
-  //   if (!user.loading) {
-  //     // fetchUserInfo();
-  //   }
-  // }
-  // componentDidMount() {
-  //   this.hideLeft()
-  // }
-  // componentDidCatch() {
-  //   clearTimeout(this.state.timer)
-  // }
-  // hideLeft = () => {
-  //   clearTimeout(this.state.timer)
-  //   const timer = setTimeout(() => {
-  //     this.setState({ collapsed: true })
-  //   }, 2000)
-  //   this.setState({ timer })
-  // }
-  // toggle = () => {
-  //   this.hideLeft()
-  //   this.setState({
-  //     collapsed: !this.state.collapsed
-  //   })
-  // }
+
   to = ({ key }) => {
     const { push } = this.props.history
     push(key)
   }
+
   render() {
     const { pathname } = this.props.location
 
     return (
       <Layout style={{ height: '100vh' }}>
-        <Left config={config} path={pathname} to={this.to} />
-
+        <LeftMenu config={config} path={pathname} to={this.to} />
         <Right>
           <Header />
           <Content>
             <Switch>
-              <Redirect exact from="/" to="/article/draft/all/new" />
+              <Redirect exact from="/" to="/article/draft/全部/new" />
               <Route exact path="/article/:type/:tag/:_id" component={Edit} />
-              <Route path="/article/draft" component={Draft} />
-              <Route path="/article/manage" component={Manage} />
+              {/* <Route path="/article/draft" component={Draft} /> */}
+              {/* <Route path="/article/manage" component={Manage} /> */}
             </Switch>
           </Content>
         </Right>

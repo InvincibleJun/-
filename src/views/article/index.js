@@ -21,6 +21,7 @@ class Ed extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      params: null,
       tagList: [],
       value: '',
       title: '',
@@ -36,9 +37,12 @@ class Ed extends Component {
     clearInterval(timer)
   }
 
-  componentWillReceiveProps(nextProps) {
-    // this.props.
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const params = nextProps.match.params
+  //   this.setState({
+  //     params
+  //   })
+  // }
 
   componentDidMount() {
     const { type, tag, _id } = this.props.match.params
@@ -54,11 +58,11 @@ class Ed extends Component {
   }
 
   open = _id => {
-    const { type, tag } = this.props.match.params
+    // const { type, tag } = this.props.match.params
     // const { openArticle } = this.props
-    this.setState({ edited: false })
-    this.props.history.push(`/article/${type}/${tag}/${_id}`)
-    this.props.changeActive(_id)
+    // this.setState({ edited: false })
+    // this.props.history.push(`/article/${type}/${tag}/${_id}`)
+    // this.props.changeActive(_id)
     // openArticle(_id, active)
     // this.props.openArticle(_id, active)
   }
@@ -67,23 +71,24 @@ class Ed extends Component {
     this.props.match.params[key] = value
     const { type, tag, _id } = this.props.match.params
     this.props.history.push(`/article/${type}/${tag}/${_id}`)
-    this.props.fetchGetList({ type, tag })
+    // 重新获得列表
+    this.props.fetchGetList()
   }
 
   render() {
     const { fetchAddTag, fetchAddArticle, tag, article, match } = this.props
     const { list: tagList } = tag
     const { list: articleList, active } = article
-    const { _id } = match.params
 
     return (
       <Container style={{ position: 'relative' }}>
         <ArticleList
+          matched={match.params}
           open={this.open}
           list={tagList}
           articleList={articleList}
           push={this.push}
-          active={_id}
+          // active={_id}
         />
         <ArticleEdit
           list={tagList}

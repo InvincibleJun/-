@@ -163,7 +163,7 @@ class Edit extends Component {
   }
 
   render() {
-    const { list, save } = this.props
+    const { list } = this.props
     const { value, title, tags, show } = this.state
 
     return (

@@ -44,6 +44,7 @@ const Article = styled.div`
 `
 
 const Create = styled.div`
+  cursor: pointer;
   line-height: 80px;
   text-align: center;
   border-bottom: 1px solid #ccc;
@@ -74,14 +75,15 @@ const Controller = styled.div`
 `
 
 const selectType = [
-  { value: '1', label: '全  部' },
-  { value: '2', label: '草  稿' },
-  { value: '3', label: '已发布' },
-  { value: '4', label: '已删除' }
+  { value: 'all', label: '全  部' },
+  { value: 'draft', label: '草  稿' },
+  { value: 'publish', label: '已发布' },
+  { value: 'delete', label: '已删除' }
 ]
 
 class ArticleList extends Component {
   static propTypes = {
+    matched: PropTypes.object.isRequired,
     open: PropTypes.func.isRequired,
     active: PropTypes.string.isRequired,
     list: PropTypes.array.isRequired,
@@ -89,8 +91,9 @@ class ArticleList extends Component {
   }
 
   render() {
-    const { type, tag } = this.props.match.params
-    const { open, active, list, push, articleList } = this.props
+    // const {} = this.props
+    const { open, active, list, push, articleList, matched } = this.props
+    const { type, tag } = matched
 
     return (
       <Container>
@@ -116,7 +119,7 @@ class ArticleList extends Component {
               <MenuItem
                 key={_id}
                 insetChildren={true}
-                value={_id}
+                value={name}
                 primaryText={name}
               />
             ))}
@@ -124,7 +127,8 @@ class ArticleList extends Component {
         </TopSelect>
 
         <Create onClick={() => open('new')}>
-          <i className="iconfont icon-plus" />新建文章
+          <i className="iconfont icon-plus" />
+          新建文章
         </Create>
         {articleList.map((val, key) => (
           <Article
@@ -151,8 +155,6 @@ class ArticleList extends Component {
               </IconMenu>
             </Controller>
             <ButtonGroup>
-              {/* <RaisedButton>发布</RaisedButton>
-              <RaisedButton>删除</RaisedButton> */}
               <div>{moment(val.updateTime).format('YYYY-MM-DD')}</div>
             </ButtonGroup>
           </Article>

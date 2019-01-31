@@ -1,7 +1,7 @@
 import request from '../utils/request'
 
 export function getList(query) {
-  return request('/v1/article/getList', { query })
+  return request('/articles', { query })
 }
 
 export function delArticle(body) {
@@ -9,7 +9,7 @@ export function delArticle(body) {
 }
 
 export function addArticle(body) {
-  return request('/v1/article/add', { method: 'POST', body })
+  return request('/v1/articles', { method: 'POST', body })
 }
 
 export function getOneArticle(query) {
