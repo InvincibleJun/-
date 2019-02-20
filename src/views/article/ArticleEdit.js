@@ -50,40 +50,34 @@ class Edit extends Component {
 
   static propTypes = {}
 
-  componentWillMount() {
-    const { _id } = this.props.match.params
-    this.changeStatus(_id)
+  state = {
+    tagList: [],
+    value: '',
+    title: '',
+    tags: [],
+    status: -1,
+    show: false
   }
 
   componentWillReceiveProps(nextProps) {
-    // const { _id: oldId } = this.props.match.params
-    // const { _id } = nextProps.match.params
-    // // if (oldId !== _id && oldId !== 'new')
-    // this.changeStatus(_id)
-  }
+    const { active } = nextProps
 
-  changeStatus(_id) {
-    // if (_id !== 'new') {
-    //   if (active && active.Loaded) {
-    //     this.setState({
-    //       title: active.title,
-    //       _id: active._id,
-    //       value: active.body || '',
-    //       tags: active.tags
-    //     })
-    //   } else {
-    //     // getOneArticle({ _id }).then(res => {
-    //     //   this.setState({
-    //     //     title: res.title,
-    //     //     _id: res._id,
-    //     //     value: res.body || '',
-    //     //     tags: res.tags
-    //     //   })
-    //     // })
-    //   }
-    // } else {
-    //   this.clear()
-    // }
+    if (nextProps.active === 'new') {
+      this.setState({
+        value: '',
+        title: [],
+        tags: ''
+      })
+    } else if (this.props.active && active !== this.props.active) {
+      const { loaded, body: value, tags, title } = active
+      if (loaded) {
+        this.setState({
+          value,
+          tags: tags.map(v => v._id),
+          title
+        })
+      }
+    }
   }
 
   addItem(show) {
@@ -110,15 +104,6 @@ class Edit extends Component {
         <RaisedButton label="创建" onClick={this.createTag} />
       </AddItem>
     )
-  }
-
-  state = {
-    tagList: [],
-    value: '',
-    title: '',
-    tags: [],
-    status: -1,
-    show: false
   }
 
   saveArticle = () => {

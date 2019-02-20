@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { getOneArticle } from '../../services/article'
-import ArticleList from './article-list'
-import ArticleEdit from './article-edit'
+import ArticleList from './ArticleList'
+import ArticleEdit from './ArticleEdit'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as tagActions from '../../actions/tag'
 import * as articleActions from '../../actions/article'
+import { debug } from 'util'
 
 const Container = styled.div`
   display: flex;
@@ -37,19 +38,15 @@ class Ed extends Component {
     clearInterval(timer)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const params = nextProps.match.params
-  //   this.setState({
-  //     params
-  //   })
-  // }
-
   componentDidMount() {
     const { type, tag, _id } = this.props.match.params
 
-    this.props.changeActive(_id)
     this.props.fetchTagsData()
-    this.props.fetchGetList({ type, tag })
+    this.props.fetchGetList({ type, tag }).then(() => {
+      this.props.changeActive(_id)
+    })
+    this.props.openArticle(_id)
+
     timer = setInterval(() => {
       if (this.state.edited) {
         this.saveArticle()
@@ -58,25 +55,36 @@ class Ed extends Component {
   }
 
   open = _id => {
+    this.push('_id', _id, false)
     // const { type, tag } = this.props.match.params
     // const { openArticle } = this.props
     // this.setState({ edited: false })
     // this.props.history.push(`/article/${type}/${tag}/${_id}`)
-    // this.props.changeActive(_id)
     // openArticle(_id, active)
-    // this.props.openArticle(_id, active)
+
+    this.props.openArticle(_id)
   }
 
-  push = (key, value) => {
+  save = option => {
+    this.props.fetchAddArticle(option).then(res => {
+      this.push('_id', res._id, false)
+    })
+  }
+
+  push = (key, value, refresh = true) => {
+    if (key === '_id') {
+      this.props.changeActive(value)
+    }
+
     this.props.match.params[key] = value
     const { type, tag, _id } = this.props.match.params
     this.props.history.push(`/article/${type}/${tag}/${_id}`)
     // 重新获得列表
-    this.props.fetchGetList()
+    refresh && this.props.fetchGetList({ type, tag })
   }
 
   render() {
-    const { fetchAddTag, fetchAddArticle, tag, article, match } = this.props
+    const { fetchAddTag, tag, article, match } = this.props
     const { list: tagList } = tag
     const { list: articleList, active } = article
 
@@ -88,12 +96,12 @@ class Ed extends Component {
           list={tagList}
           articleList={articleList}
           push={this.push}
-          // active={_id}
+          active={active}
         />
         <ArticleEdit
           list={tagList}
           active={active}
-          save={fetchAddArticle}
+          save={this.save}
           fetchAddTag={fetchAddTag}
         />
       </Container>

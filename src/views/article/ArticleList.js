@@ -40,7 +40,7 @@ const Article = styled.div`
     background-color: #e6e6e6;
     cursor: pointer;
   }
-  ${props => (props.isActive ? 'background-color: #e6e6e6;' : '')};
+  background-color: ${props => (props.isActive ? '#e6e6e6' : '')};
 `
 
 const Create = styled.div`
@@ -74,6 +74,15 @@ const Controller = styled.div`
   top: 20px;
 `
 
+const TagsController = styled.div``
+
+const Tag = styled.span`
+  border: 1px solid ${props => props.color};
+  padding: 0 10px;
+  border-radius: 4px;
+  color: ${props => props.color};
+`
+
 const selectType = [
   { value: 'all', label: '全  部' },
   { value: 'draft', label: '草  稿' },
@@ -85,13 +94,26 @@ class ArticleList extends Component {
   static propTypes = {
     matched: PropTypes.object.isRequired,
     open: PropTypes.func.isRequired,
-    active: PropTypes.string.isRequired,
+    // active: PropTypes.string.isRequired,
     list: PropTypes.array.isRequired,
     articleList: PropTypes.array.isRequired
   }
 
+  renderTags(tags) {
+    return (
+      <TagsController>
+        {tags.map(({ _id, color, name }) => {
+          return (
+            <Tag key={_id} color={color}>
+              {name}
+            </Tag>
+          )
+        })}
+      </TagsController>
+    )
+  }
+
   render() {
-    // const {} = this.props
     const { open, active, list, push, articleList, matched } = this.props
     const { type, tag } = matched
 
@@ -126,39 +148,42 @@ class ArticleList extends Component {
           </DropDownMenu>
         </TopSelect>
 
-        <Create onClick={() => open('new')}>
+        <Create onClick={() => push('_id', 'new')}>
           <i className="iconfont icon-plus" />
           新建文章
         </Create>
-        {articleList.map((val, key) => (
-          <Article
-            key={key}
-            isActive={active === val._id}
-            onClick={() => open(val._id)}
-          >
-            <ListTitle>
-              <i className="iconfont icon-file" />
-              {val.title}
-            </ListTitle>
-            <Controller>
-              <IconMenu
-                iconButtonElement={
-                  <IconButton>
-                    <MoreVertIcon />
-                  </IconButton>
-                }
-                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-              >
-                <MenuItem primaryText="发布" />
-                <MenuItem primaryText="删除" />
-              </IconMenu>
-            </Controller>
-            <ButtonGroup>
-              <div>{moment(val.updateTime).format('YYYY-MM-DD')}</div>
-            </ButtonGroup>
-          </Article>
-        ))}
+        {articleList.map((val, key) => {
+          return (
+            <Article
+              key={key}
+              isActive={active && active._id === val._id}
+              onClick={() => open(val._id)}
+            >
+              <ListTitle>
+                <i className="iconfont icon-file" />
+                {val.title}
+              </ListTitle>
+              <Controller>
+                <IconMenu
+                  iconButtonElement={
+                    <IconButton>
+                      <MoreVertIcon />
+                    </IconButton>
+                  }
+                  anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                  targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                >
+                  <MenuItem primaryText="发布" />
+                  <MenuItem primaryText="删除" />
+                </IconMenu>
+              </Controller>
+              <ButtonGroup>
+                {this.renderTags(val.tags)}
+                <div>{moment(val.updateTime).format('YYYY-MM-DD')}</div>
+              </ButtonGroup>
+            </Article>
+          )
+        })}
       </Container>
     )
   }

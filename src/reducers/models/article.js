@@ -12,9 +12,10 @@ export default (state = initState, action) => {
   } else if (action.type === 'SAVE_ARTICLE_LIST_START') {
     return { ...state, loading: true }
     // 创建
-  } else if (action.type === 'CREAT_ARTICLE') {
+  } else if (action.type === 'CREATE_ARTICLE') {
     Object.assign(action.data, { loaded: true })
     state.list.unshift(action.data)
+    console.log(state.list)
     return { ...state, list: state.list }
     // 更新
   } else if (action.type === 'UPDATE_ARTICLE') {
@@ -22,12 +23,23 @@ export default (state = initState, action) => {
     const { _id } = action.data
     return {
       ...state,
-      list: state.list.map(l => (l._id === _id ? action.data : l))
+      list: state.list.map(item => (item._id === _id ? action.data : item))
     }
     // 当前激活区域
   } else if (action.type === 'CHANGE_ACTIVE') {
-    let _id = action.data
-    return { ...state, active: state.list.find(val => val._id === _id) }
+    return {
+      ...state,
+      active:
+        action.data === 'new'
+          ? 'new'
+          : state.list.find(val => val._id === action.data)
+    }
+    // 填充当前文章数据
+  } else if (action.type === 'FILL_ACTIVE') {
+    return {
+      ...state,
+      active: { ...state.active, ...action.data, loaded: true }
+    }
   } else {
     return state
   }

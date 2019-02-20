@@ -12,6 +12,10 @@ export function addArticle(body) {
   return request('/v1/articles', { method: 'POST', body })
 }
 
-export function getOneArticle(query) {
-  return request('/v1/article/getOne', { query })
+export function editArticle(body, id) {
+  return request(`/v1/articles/${id}`, { method: 'PUT', body })
+}
+
+export function getOneArticle(id) {
+  return request(`/v1/articles/${id}`)
 }
