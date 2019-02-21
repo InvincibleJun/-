@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { getOneArticle } from '../../services/article'
+// import { getOneArticle } from '../../services/article'
 import ArticleList from './ArticleList'
 import ArticleEdit from './ArticleEdit'
 
@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as tagActions from '../../actions/tag'
 import * as articleActions from '../../actions/article'
-import { debug } from 'util'
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +17,7 @@ const Container = styled.div`
 
 let timer
 
-class Ed extends Component {
+class Index extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -56,12 +55,6 @@ class Ed extends Component {
 
   open = _id => {
     this.push('_id', _id, false)
-    // const { type, tag } = this.props.match.params
-    // const { openArticle } = this.props
-    // this.setState({ edited: false })
-    // this.props.history.push(`/article/${type}/${tag}/${_id}`)
-    // openArticle(_id, active)
-
     this.props.openArticle(_id)
   }
 
@@ -84,7 +77,14 @@ class Ed extends Component {
   }
 
   render() {
-    const { fetchAddTag, tag, article, match } = this.props
+    const {
+      fetchAddTag,
+      tag,
+      article,
+      match,
+      fetchdeleteArticle,
+      fetchPublishArticle
+    } = this.props
     const { list: tagList } = tag
     const { list: articleList, active } = article
 
@@ -94,9 +94,11 @@ class Ed extends Component {
           matched={match.params}
           open={this.open}
           list={tagList}
+          deleteArticle={fetchdeleteArticle}
           articleList={articleList}
           push={this.push}
           active={active}
+          publishArticle={fetchPublishArticle}
         />
         <ArticleEdit
           list={tagList}
@@ -123,4 +125,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Ed)
+)(Index)

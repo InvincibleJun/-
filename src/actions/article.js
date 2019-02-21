@@ -2,7 +2,9 @@ import {
   getList,
   addArticle,
   editArticle,
-  getOneArticle
+  getOneArticle,
+  deleteArticle,
+  publishArticle
 } from '../services/article'
 
 // export const addArticle = data => ({type: 'ADD_ARTICLE', data});
@@ -49,6 +51,13 @@ export const fetchAddArticle = arg => {
   }
 }
 
+export const fetchdeleteArticle = _id => {
+  return dispatch =>
+    deleteArticle(_id).then(res => {
+      dispatch({ type: 'DELETE_ARTICLE', data: _id })
+    })
+}
+
 // export const fetchOneArticle = arg => {
 //   return dispatch => {
 //     getOneArticle(arg).then(res => {
@@ -67,4 +76,7 @@ export const openArticle = _id => {
 
 export const changeActive = data => ({ type: 'CHANGE_ACTIVE', data })
 
+export const fetchPublishArticle = _id => {
+  return dispatch => publishArticle(_id)
+}
 // const updateArticleOne = data => ({ type: 'UPDTAE_ARTICLE_ONE', data })

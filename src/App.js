@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import { Lifecycle } from 'react-router'
 import Edit from './views/article/Index'
-import Draft from './views/article/draft'
-import Manage from './views/article/manage'
 import * as userActions from './actions/user'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import LeftMenu from './components/LeftMenu'
 import './App.css'
 import styled from 'styled-components'
+import Login from './Login'
 
 const config = [
   {
@@ -50,7 +50,12 @@ class App extends Component {
     user: PropTypes.object,
     push: PropTypes.func,
     history: PropTypes.object
-    // fetchUserInfo: PropTypes.func
+  }
+
+  mixins: [Lifecycle]
+
+  routerWillEnter(nextLocation) {
+    console.log(nextLocation)
   }
 
   to = ({ key }) => {
@@ -61,6 +66,16 @@ class App extends Component {
   render() {
     const { pathname } = this.props.location
 
+    if (pathname === '/login') {
+      return <Login />
+    }
+
+    const isLogin = localStorage.getItem('user')
+
+    if (!isLogin) {
+      return <Redirect to="/login" />
+    }
+
     return (
       <Layout style={{ height: '100vh' }}>
         <LeftMenu config={config} path={pathname} to={this.to} />
@@ -68,10 +83,8 @@ class App extends Component {
           <Header />
           <Content>
             <Switch>
-              <Redirect exact from="/" to="/article/draft/全部/new" />
+              <Redirect exact from="/" to="/article/draft/标签/new" />
               <Route exact path="/article/:type/:tag/:_id" component={Edit} />
-              {/* <Route path="/article/draft" component={Draft} /> */}
-              {/* <Route path="/article/manage" component={Manage} /> */}
             </Switch>
           </Content>
         </Right>

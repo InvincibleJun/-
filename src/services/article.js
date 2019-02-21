@@ -5,17 +5,38 @@ export function getList(query) {
 }
 
 export function delArticle(body) {
-  return request('/v1/article/del', { method: 'POST', body })
+  return request('/article/del', { method: 'POST', body })
 }
 
 export function addArticle(body) {
-  return request('/v1/articles', { method: 'POST', body })
+  return request('/articles', { method: 'POST', body })
 }
 
 export function editArticle(body, id) {
-  return request(`/v1/articles/${id}`, { method: 'PUT', body })
+  return request(`/articles/${id}`, { method: 'PUT', body })
 }
 
 export function getOneArticle(id) {
-  return request(`/v1/articles/${id}`)
+  return request(`/articles/${id}`)
+}
+
+export function uploadImage(body) {
+  return request('/articles/image', {
+    method: 'POST',
+    body,
+    processData: false
+  })
+}
+
+export function deleteArticle(id) {
+  return request(`/articles/${id}`, {
+    method: 'DELETE',
+    processData: false
+  })
+}
+
+export function publishArticle(id) {
+  return request(`/articles/${id}/1`, {
+    method: 'PUT'
+  })
 }

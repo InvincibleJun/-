@@ -13,10 +13,10 @@ export const fetchTagsData = arg => {
 const addTagById = data => ({ type: 'ADD_TAG', data })
 
 export const fetchAddTag = arg => {
-  return dispatch => {
+  return dispatch =>
     addTag(arg).then(res => {
       dispatch(addTagById(res))
       dispatch(fetchTagsData())
+      return res
     })
-  }
 }

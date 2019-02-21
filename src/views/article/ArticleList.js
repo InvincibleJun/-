@@ -17,14 +17,16 @@ const Container = styled.div`
 `
 
 const ButtonGroup = styled.div`
-  float: right;
-  margin-right: 50px;
+  position: absolute;
+  right: 40px;
+  bottom: 5px;
 `
 
 const ListTitle = styled.div`
   text-align: left;
   font-size: 18px;
   line-height: 20px;
+  width: 200px;
   margin: 10px;
   i {
     margin-right: 8px;
@@ -32,15 +34,20 @@ const ListTitle = styled.div`
 `
 
 const Article = styled.div`
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #eeeeee;
   height: 80px;
   position: relative;
   overflow: hidden;
   &:hover {
-    background-color: #e6e6e6;
+    background-color: #eeeeee;
     cursor: pointer;
   }
-  background-color: ${props => (props.isActive ? '#e6e6e6' : '')};
+  color: #333;
+  border-left-color: transparent;
+  transition: border-left-width 0.5s, background-color 0.3s;
+  border-left: ${props =>
+    props.isActive ? '4px solid #66cd00' : '0px solid  #66cd00'};
+  background-color: ${props => (props.isActive ? '#eeeeee' : '')};
 `
 
 const Create = styled.div`
@@ -113,6 +120,20 @@ class ArticleList extends Component {
     )
   }
 
+  deleteArticle(event, id) {
+    event.stopPropagation()
+    this.props.deleteArticle(id).then(() => {
+      this.props.push('_id', 'new', true)
+    })
+  }
+
+  publishArticle(event, id) {
+    event.stopPropagation()
+    this.props.publishArticle(id).then(() => {
+      this.props.push('_id', 'new', true)
+    })
+  }
+
   render() {
     const { open, active, list, push, articleList, matched } = this.props
     const { type, tag } = matched
@@ -137,7 +158,7 @@ class ArticleList extends Component {
             value={tag}
             onChange={(e, index, value) => push('tag', value)}
           >
-            {[{ name: '全部', _id: 'all' }, ...list].map(({ _id, name }) => (
+            {[{ name: '标签', _id: 'all' }, ...list].map(({ _id, name }) => (
               <MenuItem
                 key={_id}
                 insetChildren={true}
@@ -173,13 +194,19 @@ class ArticleList extends Component {
                   anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                   targetOrigin={{ horizontal: 'left', vertical: 'top' }}
                 >
-                  <MenuItem primaryText="发布" />
-                  <MenuItem primaryText="删除" />
+                  <MenuItem
+                    primaryText="发布"
+                    onClick={e => this.publishArticle(e, val._id)}
+                  />
+                  <MenuItem
+                    primaryText="删除"
+                    onClick={e => this.deleteArticle(e, val._id)}
+                  />
                 </IconMenu>
               </Controller>
               <ButtonGroup>
                 {this.renderTags(val.tags)}
-                <div>{moment(val.updateTime).format('YYYY-MM-DD')}</div>
+                <div>{moment(val.updateTime).fromNow()}</div>
               </ButtonGroup>
             </Article>
           )

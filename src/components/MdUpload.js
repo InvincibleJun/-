@@ -4,9 +4,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Input, Upload, Icon } from 'antd'
-import { uploadImage } from '../services/draft'
-import Modal from './modal'
+import RaisedButton from 'material-ui/RaisedButton'
+import { uploadImage } from '../services/article'
+import Modal from './Modal'
 
 const UploadContainer = styled.div`
   padding-bottom: 20px;
@@ -27,28 +27,40 @@ const Wrapper = styled.div`
     font-weight: bold;
   }
 `
-const Item = styled.div`
-  margin: 15px;
+
+const VisibleFileInput = styled.input`
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+`
+
+const WatchImage = styled.div`
+  img {
+    display: block;
+    margin: 20px auto;
+    border: 1px dashed #ccc;
+  }
 `
 
 class MdUpload extends Component {
-  propTypes = {
+  static propTypes = {
     ide: PropTypes.object
   }
 
   state = {
     show: false,
     loading: false,
-    fileList: [],
-    form: {
-      width: undefined,
-      height: undefined,
-      alt: undefined
-    }
+    file: null,
+    src: ''
   }
 
   push = event => {
-    const file = this.state.fileList[0]
+    const { file } = this.state
     if (!file) return
     this.setState({ loading: true })
     const data = new FormData()
@@ -66,24 +78,16 @@ class MdUpload extends Component {
     this.setState({
       show: false,
       loading: false,
-      fileList: [],
-      form: {
-        width: undefined,
-        height: undefined,
-        alt: undefined
-      }
+      file: null,
+      src: ''
     })
   }
 
   addImgToIDE = fileName => {
     const { ide } = this.props
-    const { width = '100%', height = '100%', alt = '' } = this.state.form
     let code = ide.codemirror
     let start = code.getCursor('start')
-    code.replaceRange(
-      `<img src="${fileName}" width="${width}" height="${height}" alt="${alt}"/>`,
-      start
-    )
+    code.replaceRange(`<img src="${fileName}" />\r\n`, start)
     this.close()
   }
 
@@ -93,25 +97,50 @@ class MdUpload extends Component {
     this.setState({ form: { ...form, [target]: val } })
   }
 
-  render() {
-    const { show, fileList, loading, form } = this.state
-    // console.log(show)
-    const props = {
-      action: '/',
-      fileList,
-      beforeUpload: file => {
-        return false
-      },
-      onChange: ({ file, fileList }) => {
-        this.setState({ fileList: [file] })
-      }
+  handlerFileChange(e) {
+    const file = e.target.files[0]
+    this.setState({
+      file
+    })
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    // var vm = this
+    reader.onload = e => {
+      let base64String = e.target.result
+      this.setState({ src: base64String })
     }
+  }
+
+  render() {
+    const { show, src } = this.state
 
     return (
       <Wrapper>
         <Modal show={show}>
           <UploadContainer>
-            <h3>上传图片</h3>
+            <h3>
+              上传图片
+              {/*  */}
+            </h3>
+            <RaisedButton
+              label="选择上传图片"
+              labelPosition="before"
+              style={{
+                margin: 12
+              }}
+              containerElement="label"
+            >
+              <VisibleFileInput
+                onChange={e => {
+                  this.handlerFileChange(e)
+                }}
+                type="file"
+              />
+            </RaisedButton>
+            <WatchImage>
+              {src && <img src={src} width="200" alt="" />}
+            </WatchImage>
+            {/* <h3>上传图片</h3>
             <Upload
               style={{ marginLeft: 70 }}
               {...props}
@@ -145,8 +174,17 @@ class MdUpload extends Component {
                 value={form.height}
                 onChange={e => this.changeValue(e, 'height')}
               />
-            </Item>
-            <Button
+            </Item> */}
+            <div style={{ textAlign: 'center' }}>
+              <RaisedButton
+                label="上传"
+                onClick={this.push}
+                style={{ marginRight: 20 }}
+              />
+              <RaisedButton onClick={this.close} label="关闭" />
+            </div>
+
+            {/* <Button
               onClick={this.push}
               loading={loading}
               style={{ marginLeft: 80 }}
@@ -155,7 +193,7 @@ class MdUpload extends Component {
             </Button>
             <Button onClick={this.close} style={{ marginLeft: 20 }}>
               关闭
-            </Button>
+            </Button> */}
           </UploadContainer>
         </Modal>
       </Wrapper>

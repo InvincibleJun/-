@@ -3,9 +3,15 @@ import PropTypes from 'prop-types'
 import '../../../assets/css/font-awesome.min.css'
 import 'simplemde/dist/simplemde.min.css'
 import SimpleMDE from 'simplemde'
-import MdUpLoad from '../../../components/md-upload'
+import MdUpLoad from '../../../components/MdUpload'
 
 class Ide extends Component {
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+    options: PropTypes.object,
+    update: PropTypes.func
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.simplemde.value()) {
       this.simplemde.value(nextProps.value)
@@ -64,12 +70,6 @@ class Ide extends Component {
       </div>
     )
   }
-}
-
-Ide.propTypes = {
-  value: PropTypes.string.isRequired,
-  options: PropTypes.object,
-  update: PropTypes.func
 }
 
 export default Ide

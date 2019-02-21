@@ -40,6 +40,13 @@ export default (state = initState, action) => {
       ...state,
       active: { ...state.active, ...action.data, loaded: true }
     }
+  } else if (action.type === 'DELETE_ARTICLE') {
+    const isActive = state.active._id === action.data
+    return {
+      ...state,
+      active: isActive ? null : state.active,
+      list: state.list.filter(item => item._id !== action.data)
+    }
   } else {
     return state
   }

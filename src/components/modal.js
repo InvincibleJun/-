@@ -14,12 +14,12 @@ const fadeIn = keyframes`
 const Container = styled.div`
   position: fixed;
   top: 0;
-  left:0;
-  z-index:10000;
+  left: 0;
+  z-index: 10000;
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.65);
-  animation: .5s ${fadeIn} ease-out;
+  animation: 0.5s ${fadeIn} ease-out;
 `
 const Main = styled.div`
   position: absolute;
@@ -33,30 +33,23 @@ const Main = styled.div`
 `
 
 class Modal extends Component {
-  // com
-  componentWillReceiveProps (newProps, oldProps) {
-    if (!newProps) {
-    }
+  static propTypes = {
+    children: PropTypes.object,
+    show: PropTypes.bool
   }
 
-  render () {
+  render() {
     const { children, show } = this.props
     return (
       <div>
-        {show &&
+        {show && (
           <Container>
-            <Main width='300px'>{children}</Main>
+            <Main width="300px">{children}</Main>
           </Container>
-        }
-
+        )}
       </div>
     )
   }
-}
-
-Modal.propTypes = {
-  children: PropTypes.object,
-  show: PropTypes.boolean
 }
 
 export default Modal

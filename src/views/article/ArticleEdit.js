@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import Ide from './_index/ide'
-import ArticleStatus from './article-status'
 import TextField from 'material-ui/TextField'
 import styled from 'styled-components'
 import { lightGreen500 } from 'material-ui/styles/colors'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import moment from 'moment'
-import { addArticle, getOneArticle } from '../../services/article'
 import { withRouter } from 'react-router'
 
 import ContentAdd from 'material-ui/svg-icons/content/add'
@@ -56,19 +54,23 @@ class Edit extends Component {
     title: '',
     tags: [],
     status: -1,
-    show: false
+    show: false,
+    newTag: ''
   }
 
   componentWillReceiveProps(nextProps) {
     const { active } = nextProps
+    if (nextProps.list !== this.props.list) {
+      return
+    }
 
     if (nextProps.active === 'new') {
       this.setState({
         value: '',
-        title: [],
-        tags: ''
+        title: '',
+        tags: []
       })
-    } else if (this.props.active && active !== this.props.active) {
+    } else if (active && active !== this.props.active) {
       const { loaded, body: value, tags, title } = active
       if (loaded) {
         this.setState({
@@ -123,7 +125,12 @@ class Edit extends Component {
   }
 
   createTag = () => {
-    this.props.fetchAddTag({ name: this.state.newTag })
+    this.props.fetchAddTag({ name: this.state.newTag }).then(() => {
+      this.setState({
+        show: false,
+        newTag: ''
+      })
+    })
   }
 
   tagsChange = (event, index, tags) => {
@@ -178,7 +185,7 @@ class Edit extends Component {
               <MenuItem
                 key={_id}
                 insetChildren={true}
-                checked={tags && tags.indexOf(_id) > -1}
+                checked={tags.indexOf(_id) > -1}
                 value={_id}
                 primaryText={name}
               />
@@ -186,7 +193,6 @@ class Edit extends Component {
           </SelectField>
           {this.addItem(show)}
         </Line>
-        <ArticleStatus status={1} />
         <Ide value={value} update={this.update} />
         <RaisedButton
           backgroundColor={lightGreen500}
