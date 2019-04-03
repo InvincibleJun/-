@@ -169,7 +169,7 @@ class ArticleList extends Component {
           </DropDownMenu>
         </TopSelect>
 
-        <Create onClick={() => push('_id', 'new')}>
+        <Create onClick={() => push('_id', 'new', false)}>
           <i className="iconfont icon-plus" />
           新建文章
         </Create>

@@ -40,8 +40,6 @@ class Login extends Component {
   }
 
   githubLogin = event => {
-    debugger
-    // event.preventDefault()
     window.location.href =
       'https://github.com/login/oauth/authorize?client_id=79c7c7124c99c2c89d7c'
   }

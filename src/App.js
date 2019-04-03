@@ -11,6 +11,8 @@ import './App.css'
 import styled from 'styled-components'
 import Login from './Login'
 
+import Cookies from 'js-cookie'
+
 const config = [
   {
     name: '文章',
@@ -70,9 +72,9 @@ class App extends Component {
       return <Login />
     }
 
-    const isLogin = localStorage.getItem('user')
+    const token = Cookies.get('token')
 
-    if (!isLogin) {
+    if (!token) {
       return <Redirect to="/login" />
     }
 
