@@ -71,7 +71,7 @@ class Edit extends Component {
         tags: []
       })
     } else if (active && active !== this.props.active) {
-      const { loaded, body: value, tags, title } = active
+      const { loaded, body: value, tags = [], title } = active
       if (loaded) {
         this.setState({
           value,

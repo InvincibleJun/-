@@ -35,6 +35,16 @@ class Login extends Component {
       })
   }
 
+  componentWillMount() {
+    let search = window.location.search.substr(1)
+    let match = search.match(/code=([a-z0-9]+)/)
+    if (match && match[1]) {
+      this.props.userGitHubLogin({ code: match[1] }).then(() => {
+        this.props.history.push('/')
+      })
+    }
+  }
+
   shouldComponentUpdate() {
     return false
   }

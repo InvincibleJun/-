@@ -7,3 +7,7 @@ export function loginUser(body) {
 export function signout() {
   return request('/tags')
 }
+
+export function loginUserGithubService(body) {
+  return request('/user/github', { method: 'POST', body })
+}
